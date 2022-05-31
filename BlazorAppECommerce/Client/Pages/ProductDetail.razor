@@ -1,0 +1,39 @@
+﻿@page "/product/{id}"
+@inject IProductService ProductService
+
+<div class="media">
+    <div class="media-img-big-wrapper mr-2">
+        <img class="media-img-big" src="@product.image" alt="@product.title" />
+    </div>
+    <div class="media-body">
+        <h2 class="mb-0">@product.title</h2>
+        <p>@product.description</p>
+        @if (product.originalPrice > product.price)
+        {
+            <h6 class="text-muted original-price">R$@product.originalPrice</h6>
+        }
+        <h4 class="price">
+            R$@product.price
+        </h4>
+        <button class="btn btn-primary"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Adicionar ao Carrinho</button>
+    </div>
+</div>
+
+@code {
+    private Product? product = null;
+
+    [Parameter]
+    public string? id { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (ProductService.Products == null || ProductService.Products.Count == 0)
+        {
+            ProductService.LoadProducts();
+        }
+        else
+        {
+            product = ProductService.Products.FirstOrDefault(p => p.id == Int32.Parse(id));
+        }
+    }
+}
